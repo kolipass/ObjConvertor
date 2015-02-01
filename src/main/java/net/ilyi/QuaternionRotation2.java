@@ -18,7 +18,10 @@ import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class QuaternionRotation {
+/**
+ * Предполагает запускалку вращения вокруг вектора
+ */
+public class QuaternionRotation2 {
 
 
     public static final int WIDTH = 640;
@@ -26,12 +29,12 @@ public class QuaternionRotation {
     private int delta;
     private String type;
 
-    public QuaternionRotation(String arg) {
+    public QuaternionRotation2(String arg) {
         type = arg;
     }
 
     public static void main(String[] args) {
-        QuaternionRotation qr = new QuaternionRotation(args.length > 0 ? args[0] : "1");
+        QuaternionRotation2 qr = new QuaternionRotation2(args.length > 0 ? args[0] : "1");
         qr.start();
     }
 
@@ -101,9 +104,14 @@ public class QuaternionRotation {
         double phi = Math.PI / 180.0 * angle1;
 
         Point start = new Point(-1, -1, -1);
-        Point end = new Point(1, -1, 1);
+        Point end = new Point(1, 1, 1);
         Vector vector = Vector.makeUnitVector(new Vector(start, end));
 
+        List<Point> trianglePoints = Main.makePlanes(start, 3, 1);
+
+        double i = 0.0;
+        double j = 1.0;
+        double k = 0.0;
         double cosphi = Math.cos(phi / 2.0);
         double sinphi = Math.sin(phi / 2.0);
         Quaternion q = new Quaternion(cosphi, vector.x * sinphi, vector.y * sinphi, vector.z * sinphi).unit();
@@ -114,17 +122,17 @@ public class QuaternionRotation {
         glBegin(GL_TRIANGLES);
 
         glColor3f(1.0f, 0.0f, 0.0f);
-        p = new Quaternion(0.0, -0.5, -0.5, 0.0);
+        p = QuaternionFactory.quaternion(0.0,trianglePoints.get(0));
         p = q.mul(p.mul(q.inverse()));
         glVertex3f((float) p.i, (float) p.j, (float) p.k);
 
         glColor3f(0.0f, 1.0f, 0.0f);
-        p = new Quaternion(0.0, 0.5, -0.5, 0.0);
+        p = QuaternionFactory.quaternion(0.0,trianglePoints.get(1));
         p = q.mul(p.mul(q.inverse()));
         glVertex3f((float) p.i, (float) p.j, (float) p.k);
 
         glColor3f(0.0f, 0.0f, 1.0f);
-        p = new Quaternion(0.0, 0.5, 0.5, 0.0);
+        p =QuaternionFactory.quaternion(0.0,trianglePoints.get(2));
         p = q.mul(p.mul(q.inverse()));
         glVertex3f((float) p.i, (float) p.j, (float) p.k);
 
