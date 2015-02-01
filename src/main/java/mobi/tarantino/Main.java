@@ -10,16 +10,21 @@ public class Main {
     public static final double pi = Math.acos(-1);
 
     public static void main(String[] args) throws IOException {
-        if (args.length != 0) {
-            for (String filepath : args) {
-                File source = new File(filepath);
-                if (source.exists()) {
-                    List<AbstractModel> pointList = new ArrayList<>(cylindrate(new TempFileReader(source).read(), 3, 10));
-                    new TempFileWriter<>(filepath + ".obj", pointList).write();
-                } else System.out.println("file not found");
-            }
-        }
-        System.out.println("finish");
+        String srs="Console=android&L=RUSSIAN&TIC=1&SID=KO601LGBB6.3342.1P9FJHH*&ChannelType=HTTPS&MINTime=34&MAXTime=288&AVGTime=81&MINSpeed=206&MAXSpeed=12470&AVGSpeed=1419&MobDevice=google+Nexus+4&AMOUNT=0.5&CREDITTYPE=2&DEBETTYPE=1&DEBET=40817810000201278843&CREDITBIC=044585237&DEBETBIC=044585237&CREDITFILIAL=102&CREDIT=4196860003413492&DEBETFILIAL=102&T=rt_mob_1Common.save&SCHEMENAME=RETCARDACC&SUBTABLENAME=RETCARDACC&FORMACTION=NEW&FORCESAVE=0&FORMACTION=NEW&FORCESAVE=0&XACTION=POSTDATA";
+
+        System.out.println(srs.substring(0,srs.indexOf("&T=")));
+
+
+//        if (args.length != 0) {
+//            for (String filepath : args) {
+//                File source = new File(filepath);
+//                if (source.exists()) {
+//                    List<AbstractModel> pointList = new ArrayList<>(cylindrate(new TempFileReader(source).read(), 3, 10));
+//                    new TempFileWriter<>(filepath + ".obj", pointList).write();
+//                } else System.out.println("file not found");
+//            }
+//        }
+//        System.out.println("finish");
     }
     public static List<Point> makePlanes(Point center, int edgeCount, double radius) {
         if (center != null) {
