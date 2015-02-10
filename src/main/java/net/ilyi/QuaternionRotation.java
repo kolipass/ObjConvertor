@@ -1,8 +1,6 @@
 package net.ilyi;
 
-import mobi.tarantino.Main;
 import mobi.tarantino.Point;
-import mobi.tarantino.QuaternionFactory;
 import mobi.tarantino.Vector;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
@@ -14,7 +12,6 @@ import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.util.glu.GLU;
 
 import java.nio.ByteBuffer;
-import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -23,7 +20,7 @@ public class QuaternionRotation {
 
     public static final int WIDTH = 640;
     public static final int HEIGHT = 360;
-    private int delta;
+    protected int delta;
     private String type;
 
     public QuaternionRotation(String arg) {
@@ -35,7 +32,7 @@ public class QuaternionRotation {
         qr.start();
     }
 
-    private void start() {
+    protected void start() {
         initDisplay();
         initOpenGL();
         updateDelta();
@@ -49,11 +46,12 @@ public class QuaternionRotation {
                     render3();
                     break;
             }
-            processInput();
-            Display.sync(60);
+//            processInput();
+//            Display.sync(60);
             Display.update();
-            updateDelta();
+//            updateDelta();
         }
+        Display.destroy();
     }
 
     private void initDisplay() {
@@ -94,49 +92,81 @@ public class QuaternionRotation {
     float y = 0.0f;
     float z = 1.0f;
 
-    private void render1() {
+    protected void render1() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glLoadIdentity();
 
         double phi = Math.PI / 180.0 * angle1;
 
-        Point start = new Point(-1, -1, -1);
-        Point end = new Point(1, -1, 1);
-        Vector vector = Vector.makeUnitVector(new Vector(start, end));
+        Point start = new Point(1, 1, 1);
+        Point end = new Point(-1, 1, 1);
+
+       Vector vector = new Vector(start, end);
 
         double cosphi = Math.cos(phi / 2.0);
         double sinphi = Math.sin(phi / 2.0);
+
         Quaternion q = new Quaternion(cosphi, vector.x * sinphi, vector.y * sinphi, vector.z * sinphi).unit();
         Quaternion p;
 
+        Point[] figure = {
+//                new Point(-0.5f, -0.5f),
+//                new Point(0.0f, 0.5f, -0.5f),
+//                new Point(0.0f, 0.5f, 0.5f)
+                new Point(-0.0f, 1.0f, 1f),
+                new Point(-1.0f, -1.0f, -1.0f),
+                new Point(1.0f, -1.0f, 1.0f)
+        };
 // triangle
-        glTranslatef(0.0f, 0.0f, -2.0f);
+        glTranslatef(0.0f, 0.0f, -6.0f);
         glBegin(GL_TRIANGLES);
 
         glColor3f(1.0f, 0.0f, 0.0f);
-        p = new Quaternion(0.0, -0.5, -0.5, 0.0);
-        p = q.mul(p.mul(q.inverse()));
-        glVertex3f((float) p.i, (float) p.j, (float) p.k);
+        p = new Quaternion(figure[0], 0.0);
+//        p = q.mul(p.mul(q.inverse()));
+        glVertex3d(p.i, p.j, p.k);
 
         glColor3f(0.0f, 1.0f, 0.0f);
         p = new Quaternion(0.0, 0.5, -0.5, 0.0);
-        p = q.mul(p.mul(q.inverse()));
-        glVertex3f((float) p.i, (float) p.j, (float) p.k);
+//        p = q.mul(p.mul(q.inverse()));
+        glVertex3d(p.i, p.j, p.k);
 
-        glColor3f(0.0f, 0.0f, 1.0f);
+        glVertex3d(0.0f, 0.0f, 1.0f);
         p = new Quaternion(0.0, 0.5, 0.5, 0.0);
-        p = q.mul(p.mul(q.inverse()));
-        glVertex3f((float) p.i, (float) p.j, (float) p.k);
+//        p = q.mul(p.mul(q.inverse()));
+        glVertex3d(p.i, p.j, p.k);
 
         glEnd();
 
         glBegin(GL_LINES);
-//        glColor3f(0.0f, 0.0f, 0.0f);
+        glColor3f(0.0f, 50.0f, 50.0f);
         glVertex3f(start.x, start.y, start.z);
         glVertex3f(end.x, end.y, end.z);
         glEnd();
 
+        coordinateSystem();
         angle1 += 0.1f * delta;
+    }
+
+    protected void coordinateSystem() {
+        //+X
+        glColor3f(1, 0, 0);
+        glBegin(GL_LINES);
+        glVertex3f(0, 0, 0);
+        glVertex3f(1, 0, 0);
+        glEnd();
+//+Y
+        glColor3f(0, 1, 0);
+        glBegin(GL_LINES);
+        glVertex3f(0, 0, 0);
+        glVertex3f(0, 1, 0);
+        glEnd();
+//+Z
+        glColor3f(0, 0, 1);
+        glBegin(GL_LINES);
+        glVertex3f(0, 0, 0);
+        glVertex3f(0, 0, 1);
+        glEnd();
     }
 
 
@@ -159,25 +189,25 @@ public class QuaternionRotation {
         p = rotate(p.i, p.j, p.k, 0.0, 1.0, 0.0, angle1);
         p = rotate(p.i, p.j, p.k, 1.0, 0.0, 0.0, angle2);
         p = rotate(p.i, p.j, p.k, 1.0, 1.0, 1.0, angle3);
-        glVertex3f((float) p.i, (float) p.j, (float) p.k);
+        glVertex3d(p.i, p.j, p.k);
 
         p = new Quaternion(0.0, 0.5, -0.5, 0.0);
         p = rotate(p.i, p.j, p.k, 0.0, 1.0, 0.0, angle1);
         p = rotate(p.i, p.j, p.k, 1.0, 0.0, 0.0, angle2);
         p = rotate(p.i, p.j, p.k, 1.0, 1.0, 1.0, angle3);
-        glVertex3f((float) p.i, (float) p.j, (float) p.k);
+        glVertex3d(p.i, p.j, p.k);
 
         p = new Quaternion(0.0, 0.5, 0.5, 0.0);
         p = rotate(p.i, p.j, p.k, 0.0, 1.0, 0.0, angle1);
         p = rotate(p.i, p.j, p.k, 1.0, 0.0, 0.0, angle2);
         p = rotate(p.i, p.j, p.k, 1.0, 1.0, 1.0, angle3);
-        glVertex3f((float) p.i, (float) p.j, (float) p.k);
+        glVertex3d(p.i, p.j, p.k);
 
         p = new Quaternion(0.0, -0.5, 0.5, 0.0);
         p = rotate(p.i, p.j, p.k, 0.0, 1.0, 0.0, angle1);
         p = rotate(p.i, p.j, p.k, 1.0, 0.0, 0.0, angle2);
         p = rotate(p.i, p.j, p.k, 1.0, 1.0, 1.0, angle3);
-        glVertex3f((float) p.i, (float) p.j, (float) p.k);
+        glVertex3d(p.i, p.j, p.k);
 
         glEnd();
 

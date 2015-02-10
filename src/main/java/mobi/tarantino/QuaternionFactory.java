@@ -7,6 +7,6 @@ import net.ilyi.Quaternion;
  */
 public class QuaternionFactory {
     public static Quaternion quaternion(double r, Point point) {
-        return new Quaternion(r,Point.X,Point.Y,Point.Z);
+        return new Quaternion(r, point.x, point.y, point.z);
     }
 }

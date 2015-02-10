@@ -22,17 +22,17 @@ public class Main {
         System.out.println("finish");
     }
 
-    public static List<Point> makePlanes(Point center, int edgeCount, double radius) {
-        if(edgeCount<3)
+    public static Point[] makePlanes(Point center, int edgeCount, double radius) {
+        if (edgeCount < 3)
             throw new ArithmeticException("Вершин нужно не меньше 3-х");
 
         if (center != null) {
-            List<Point> figure = new ArrayList<>();
-            for (int i = 1; i <= edgeCount; i++) {
+            Point[] figure = new Point[edgeCount];
+            for (int i = 0; i < edgeCount; i++) {
                 Point point = new Point();
                 point.x = (float) (center.x + radius * Math.cos(getFi(center.x, center.y) + 2 * i * pi / edgeCount));
                 point.y = (float) (center.x + radius * Math.sin(getFi(center.x, center.y) + 2 * i * pi / edgeCount));
-                figure.add(point);
+                figure[i] = point;
             }
             return figure;
         } else
@@ -60,8 +60,8 @@ public class Main {
         List<Point> newPoints = new ArrayList<>();
         List<Face> faces = new ArrayList<>();
 
-        List<Point> topPlane = null;
-        List<Point> bottomPlane = null;
+        Point[] topPlane = null;
+        Point[] bottomPlane = null;
 
 
         for (Point point : points) {
@@ -79,16 +79,16 @@ public class Main {
                     Face face = new Face();
                     faces.add(face);
 
-                    newPoints.add(bottomPlane.get(lastPointIndex));
+                    newPoints.add(bottomPlane[lastPointIndex]);
                     face.poinstIndexs.add(newPoints.size());
 
-                    newPoints.add(bottomPlane.get(i));
+                    newPoints.add(bottomPlane[i]);
                     face.poinstIndexs.add(newPoints.size());
 
-                    newPoints.add(topPlane.get(lastPointIndex));
+                    newPoints.add(topPlane[lastPointIndex]);
                     face.poinstIndexs.add(newPoints.size());
 
-                    newPoints.add(topPlane.get(lastPointIndex));
+                    newPoints.add(topPlane[lastPointIndex]);
                     face.poinstIndexs.add(newPoints.size());
                 }
 
