@@ -26,6 +26,8 @@ public class QuaternionRotation2 extends QuaternionRotation {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glLoadIdentity();
 
+        float radius = 1f;
+        int edgeCount = 3;
 
         Point zero = new Point(0, 0, 0);
         Point zero1 = new Point(1, 1, 0);
@@ -33,43 +35,54 @@ public class QuaternionRotation2 extends QuaternionRotation {
         Point end = new Point(1, 1, 1);
 
         Vector startVector = new Vector(zero, zero1);
-        Vector vector = Vector.makeUnitVector(new Vector(start, end));
+        Vector unitVector =
+                Vector.makeUnitVector(
+                        new Vector(start, end)
+                );
 
         angle1 = (float) Vector.angle(startVector, new Vector(start, end));
 //        double phi = Math.PI / 180.0 * angle1;
-        double phi =  180.0 * angle1/Math.PI;
-        Point[] trianglePoints =
-                Main.makePlanes(start, 3, 1);
+        double phi = 180.0 * angle1 / Math.PI;
 
 
-        double cosphi = Math.cos(phi / 2.0);
-        double sinphi = Math.sin(phi / 2.0);
-        Quaternion q = new Quaternion(cosphi, vector.x * sinphi, vector.y * sinphi, vector.z * sinphi).unit();
-        Quaternion p;
-
-//// triangle
         glTranslatef(0.0f, 0.0f, -7.0f);
 
-        glColor3f(0.0f, 0.0f, 1.0f);
-        drawHollowCircle(start.x, start.y, 1);
+        glColor3f(0.0f, 0.0f, 0.5f);
+        drawHollowCircle(start.x, start.y, radius);
 
 
         coordinateSystem();
         glColor3f(0.5f, 0.5f, 0.5f);
-        glBegin(GL_POLYGON);
-        for (int i = 0; i < trianglePoints.length; i++) {
-            p = new Quaternion(trianglePoints[i], 0.0);
-            p = q.mul(p.mul(q.inverse()));
-            glVertex3d(p.i, p.j, p.k);
-        }
-        glEnd();
+        drawFigure(Main.makePlanes(start, edgeCount, radius), getUnitQuaternion(unitVector, phi));
+        drawFigure(Main.makePlanes(end, edgeCount, radius), getUnitQuaternion(unitVector, phi));
+        glTranslatef(0.0f, 0.0f, -1.0f);
+        glColor3f(0.4f, 0.4f, 0.4f);
+        drawLine(start, end);
+//        angle1 += 0.01f * delta;
+    }
 
+    private Quaternion getUnitQuaternion(Vector vector, double phi) {
+        double cosphi = Math.cos(phi / 2.0);
+        double sinphi = Math.sin(phi / 2.0);
+        return new Quaternion(cosphi, vector.x * sinphi, vector.y * sinphi, vector.z * sinphi).unit();
+    }
+
+    private void drawLine(Point start, Point end) {
         glBegin(GL_LINES);
         glColor3f(1.0f, 0.0f, 0.0f);
         glVertex3f(start.x, start.y, start.z);
         glVertex3f(end.x, end.y, end.z);
         glEnd();
-//        angle1 += 0.01f * delta;
+    }
+
+    private void drawFigure(Point[] trianglePoints, Quaternion q) {
+        glBegin(GL_POLYGON);
+        for (int i = 0; i < trianglePoints.length; i++) {
+            Quaternion p = new Quaternion(trianglePoints[i], 0.0);
+            p = q.mul(p.mul(q.inverse()));
+            glVertex3d(p.i, p.j, p.k);
+        }
+        glEnd();
     }
 
     void drawHollowCircle(float x, float y, float radius) {
