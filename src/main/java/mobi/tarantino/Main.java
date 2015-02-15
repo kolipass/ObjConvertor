@@ -30,8 +30,8 @@ public class Main {
             Point[] figure = new Point[edgeCount];
             for (int i = 0; i < edgeCount; i++) {
                 Point point = new Point();
-                point.x = (float) (center.x + radius * Math.cos(getFi(center.x, center.y) + 2 * i * pi / edgeCount));
-                point.y = (float) (center.x + radius * Math.sin(getFi(center.x, center.y) + 2 * i * pi / edgeCount));
+                point.x = (float) (center.x + radius * Math.cos(pi/2 + 2 * i * pi / edgeCount));
+                point.y = (float) (center.y + radius * Math.sin(pi/2 + 2 * i * pi / edgeCount));
                 figure[i] = point;
             }
             return figure;
