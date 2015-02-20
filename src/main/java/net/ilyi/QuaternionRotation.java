@@ -63,7 +63,7 @@ public class QuaternionRotation {
 //            Display.sync(60);
             running = !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE);
             Display.update();
-//            updateDelta();
+            updateDelta();
         }
         Display.destroy();
     }
@@ -109,6 +109,7 @@ public class QuaternionRotation {
     }
 
     private void init2D() {
+        glLoadIdentity();
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         gluOrtho2D(0.0f, (float) Display.getWidth(), (float) Display.getHeight(), 0.0f);
@@ -201,23 +202,24 @@ public class QuaternionRotation {
     }
 
     protected void coordinateSystem() {
+        float z =0;
         //+X
         glColor3f(1, 0, 0);
         glBegin(GL_LINES);
-        glVertex3f(0, 0, 0);
-        glVertex3f(1, 0, 0);
+        glVertex3f(0, 0, z);
+        glVertex3f(1, 0, z);
         glEnd();
 //+Y
         glColor3f(0, 1, 0);
         glBegin(GL_LINES);
-        glVertex3f(0, 0, 0);
-        glVertex3f(0, 1, 0);
+        glVertex3f(0, 0, z);
+        glVertex3f(0, 1, z);
         glEnd();
 //+Z
         glColor3f(0, 0, 1);
         glBegin(GL_LINES);
-        glVertex3f(0, 0, 0);
-        glVertex3f(0, 0, 1);
+        glVertex3f(0, 0, z);
+        glVertex3f(0, 0, z+1);
         glEnd();
     }
 
