@@ -10,10 +10,16 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.util.glu.GLU;
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.UnicodeFont;
+import org.newdawn.slick.font.effects.ColorEffect;
 
+import java.awt.*;
 import java.nio.ByteBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.util.glu.GLU.gluOrtho2D;
 
 public class QuaternionRotation {
 
@@ -32,15 +38,22 @@ public class QuaternionRotation {
         qr.start();
     }
 
+    private boolean running = true;
+
     protected void start() {
         initDisplay();
-        initOpenGL();
+        initFonts();
         updateDelta();
-        while (!Display.isCloseRequested()) {
+        while (running && !Display.isCloseRequested()) {
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            init3D();
             switch (type) {
                 default:
                 case "1":
-                    render1();
+                    String[] results = render1();
+                    init2D();
+                    print(results);
                     break;
                 case "3":
                     render3();
@@ -48,10 +61,21 @@ public class QuaternionRotation {
             }
 //            processInput();
 //            Display.sync(60);
+            running = !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE);
             Display.update();
 //            updateDelta();
         }
         Display.destroy();
+    }
+
+    private void print(String[] results) {
+        String text = "";
+        for (String s : results) {
+            text += s + "\n";
+        }
+
+        onScreen.drawString(0.0f, 0.0f, text);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     private void initDisplay() {
@@ -71,17 +95,43 @@ public class QuaternionRotation {
         }
     }
 
-    private void initOpenGL() {
+    private void init3D() {
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        GLU.gluPerspective(45.0f, (float) WIDTH / HEIGHT, 0.001f, 10.0f);
+        GLU.gluPerspective(45.0f, (float) Display.getWidth() / Display.getHeight(), 0.001f, 10.0f);
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
         glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LEQUAL);
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
+
+    private void init2D() {
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        gluOrtho2D(0.0f, (float) Display.getWidth(), (float) Display.getHeight(), 0.0f);
+        glMatrixMode(GL_MODELVIEW);
+        glDisable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    private UnicodeFont onScreen;
+
+    private void initFonts() {
+        Font awtFont = new Font(null, Font.ROMAN_BASELINE, 16);
+        onScreen = new UnicodeFont(awtFont);
+        onScreen.getEffects().add(new ColorEffect(Color.black));
+        onScreen.addAsciiGlyphs();
+        try {
+            onScreen.loadGlyphs();
+        } catch (SlickException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     float camanglex = 0.0f;
     float camangley = 0.0f;
@@ -92,7 +142,7 @@ public class QuaternionRotation {
     float y = 0.0f;
     float z = 1.0f;
 
-    protected void render1() {
+    protected String[] render1() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glLoadIdentity();
 
@@ -101,7 +151,7 @@ public class QuaternionRotation {
         Point start = new Point(1, 1, 1);
         Point end = new Point(-1, 1, 1);
 
-       Vector vector = new Vector(start, end);
+        Vector vector = new Vector(start, end);
 
         double cosphi = Math.cos(phi / 2.0);
         double sinphi = Math.sin(phi / 2.0);
@@ -146,6 +196,8 @@ public class QuaternionRotation {
 
         coordinateSystem();
         angle1 += 0.1f * delta;
+
+        return new String[]{"angel: " + angle1};
     }
 
     protected void coordinateSystem() {
