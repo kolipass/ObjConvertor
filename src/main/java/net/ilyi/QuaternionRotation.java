@@ -19,6 +19,7 @@ import java.awt.*;
 import java.nio.ByteBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.util.glu.GLU.gluLookAt;
 import static org.lwjgl.util.glu.GLU.gluOrtho2D;
 
 public class QuaternionRotation {
@@ -26,6 +27,7 @@ public class QuaternionRotation {
 
     public static final int WIDTH = 640;
     public static final int HEIGHT = 360;
+    public static final int FONT_SIZE = 12;
     protected int delta;
     private String type;
 
@@ -122,7 +124,7 @@ public class QuaternionRotation {
     private UnicodeFont onScreen;
 
     private void initFonts() {
-        Font awtFont = new Font(null, Font.ROMAN_BASELINE, 16);
+        Font awtFont = new Font(null, Font.ROMAN_BASELINE, FONT_SIZE);
         onScreen = new UnicodeFont(awtFont);
         onScreen.getEffects().add(new ColorEffect(Color.black));
         onScreen.addAsciiGlyphs();

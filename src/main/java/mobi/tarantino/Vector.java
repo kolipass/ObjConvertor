@@ -1,7 +1,5 @@
 package mobi.tarantino;
 
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
-
 /**
  * Created by kolipass on 01.02.15.
  */
@@ -28,6 +26,18 @@ public class Vector extends Point {
 
 
         return unitVector;
+    }
+
+    public static Vector mul(Vector a, Vector b) {
+        Vector vector = new Vector();
+
+
+        vector.x = a.y * b.z - a.z * b.y;
+        vector.y = a.z * b.x - a.x * b.z;
+        vector.z = a.x * b.y - a.y * b.x;
+
+
+        return vector;
     }
 
     public double length() {

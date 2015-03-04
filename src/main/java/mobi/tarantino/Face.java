@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * face (f)
+ * obj face (f)
+ * Грань в формате OBJ
  */
 public class Face extends AbstractModel {
     public List<Integer> poinstIndexs;

@@ -2,6 +2,7 @@ package mobi.tarantino;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,14 @@ public class Main {
         System.out.println("finish");
     }
 
+    /**
+     * Создает многоугольник в плоскости X0Y (z=0), вписанный в окружность.
+     *
+     * @param center    координаты центра
+     * @param edgeCount колличество вершин
+     * @param radius    радиус описанной окружности
+     * @return массив вершин
+     */
     public static Point[] makePlanes(Point center, int edgeCount, double radius) {
         if (edgeCount < 3)
             throw new ArithmeticException("Вершин нужно не меньше 3-х");
@@ -30,13 +39,18 @@ public class Main {
             Point[] figure = new Point[edgeCount];
             for (int i = 0; i < edgeCount; i++) {
                 Point point = new Point();
-                point.x = (float) (center.x + radius * Math.cos(pi/2 + 2 * i * pi / edgeCount));
-                point.y = (float) (center.y + radius * Math.sin(pi/2 + 2 * i * pi / edgeCount));
+                point.x = (float) (center.x + radius * Math.cos(pi / 2 + 2 * i * pi / edgeCount));
+                point.y = (float) (center.y + radius * Math.sin(pi / 2 + 2 * i * pi / edgeCount));
+                point.z = center.z;
                 figure[i] = point;
             }
             return figure;
         } else
             return null;
+    }
+
+    public static Point[] makePlanes(int edgeCount, double radius) {
+        return makePlanes(new Point(0, 0, 0), edgeCount, radius);
     }
 
     private static double getFi(double x, double y) {
@@ -57,6 +71,10 @@ public class Main {
     }
 
     public static List<AbstractModel> cylindrate(List<Point> points, int edgeCount, double radius) {
+        return cylindrate(points, edgeCount, radius, true);
+    }
+
+    public static List<AbstractModel> cylindrate(List<Point> points, int edgeCount, double radius, boolean addFaces) {
         List<Point> newPoints = new ArrayList<>();
         List<Face> faces = new ArrayList<>();
 
@@ -97,7 +115,8 @@ public class Main {
 
         List<AbstractModel> models = new ArrayList<>();
         models.addAll(newPoints);
-        models.addAll(faces);
+        if (addFaces)
+            models.addAll(faces);
 
         return models;
     }
@@ -136,6 +155,98 @@ public class Main {
         models.addAll(shiftedFaces);
 
         return models;
+    }
+
+    /**
+     * Вычисление определителя методом Краута за O (N3)
+     * http://e-maxx.ru/algo/determinant_crout
+     * @param a
+     * @return
+     */
+    public static BigDecimal det(BigDecimal a[][]) {
+        int n = a.length;
+        try {
+
+            for (int i = 0; i < n; i++) {
+                boolean nonzero = false;
+                for (int j = 0; j < n; j++)
+                    if (a[i][j].compareTo(BigDecimal.ZERO) > 0)
+                        nonzero = true;
+                if (!nonzero)
+                    return BigDecimal.ZERO;
+            }
+
+            BigDecimal scaling[] = new BigDecimal[n];
+            for (int i = 0; i < n; i++) {
+                BigDecimal big = BigDecimal.ZERO;
+                for (int j = 0; j < n; j++)
+                    if (a[i][j].abs().compareTo(big) > 0)
+                        big = a[i][j].abs();
+                scaling[i] = BigDecimal.ONE.divide
+                        (big, 100, BigDecimal.ROUND_HALF_EVEN);
+            }
+
+            int sign = 1;
+
+            for (int j = 0; j < n; j++) {
+
+                for (int i = 0; i < j; i++) {
+                    BigDecimal sum = a[i][j];
+                    for (int k = 0; k < i; k++)
+                        sum = sum.subtract(a[i][k].multiply(a[k][j]));
+                    a[i][j] = sum;
+                }
+
+                BigDecimal big = BigDecimal.ZERO;
+                int imax = -1;
+                for (int i = j; i < n; i++) {
+                    BigDecimal sum = a[i][j];
+                    for (int k = 0; k < j; k++)
+                        sum = sum.subtract(a[i][k].multiply(a[k][j]));
+                    a[i][j] = sum;
+                    BigDecimal cur = sum.abs();
+                    cur = cur.multiply(scaling[i]);
+                    if (cur.compareTo(big) >= 0) {
+                        big = cur;
+                        imax = i;
+                    }
+                }
+
+                if (j != imax) {
+
+                    for (int k = 0; k < n; k++) {
+                        BigDecimal t = a[j][k];
+                        a[j][k] = a[imax][k];
+                        a[imax][k] = t;
+                    }
+
+                    BigDecimal t = scaling[imax];
+                    scaling[imax] = scaling[j];
+                    scaling[j] = t;
+
+                    sign = -sign;
+                }
+
+                if (j != n - 1)
+                    for (int i = j + 1; i < n; i++)
+                        a[i][j] = a[i][j].divide
+                                (a[j][j], 100, BigDecimal.ROUND_HALF_EVEN);
+
+            }
+
+            BigDecimal result = new BigDecimal(1);
+            if (sign == -1)
+                result = result.negate();
+            for (int i = 0; i < n; i++)
+                result = result.multiply(a[i][i]);
+
+            return result.divide
+                    (BigDecimal.valueOf(1), 0, BigDecimal.ROUND_HALF_EVEN);
+
+        } catch (Exception e) {
+            return BigDecimal.ZERO;
+        }
+
     }
 
 }
