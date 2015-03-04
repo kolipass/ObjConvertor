@@ -3,6 +3,7 @@ package mobi.tarantino;
 import net.ilyi.QuaternionRotation2;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -37,11 +38,18 @@ public class QuaternionRotation2Test {
         Figure bottom = Figure.move(defaultPlane, new Vector(zero, start));
 
         assertTrue(Point.plateContainsPoint(start, bottom.points.stream().toArray(Point[]::new)));
+        for (Point point : bottom.points) {
+            assertEquals(radius, new Vector(start, point).length(), 0.000001);
+        }
 
         Figure top = Figure.move(defaultPlane, new Vector(zero, end));
 
 
         assertTrue(Point.plateContainsPoint(end, top.points.stream().toArray(Point[]::new)));
+
+        for (Point point : top.points) {
+            assertEquals(radius, new Vector(end, point).length(), 0.000001);
+        }
     }
 
 }
