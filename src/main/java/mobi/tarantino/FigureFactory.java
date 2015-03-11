@@ -1,5 +1,7 @@
 package mobi.tarantino;
 
+import mobi.tarantino.collection.Figure;
+
 import java.util.ArrayList;
 import java.util.List;
 

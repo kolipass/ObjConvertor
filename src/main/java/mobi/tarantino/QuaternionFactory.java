@@ -1,5 +1,6 @@
 package mobi.tarantino;
 
+import mobi.tarantino.model.Point;
 import net.ilyi.Quaternion;
 
 /**

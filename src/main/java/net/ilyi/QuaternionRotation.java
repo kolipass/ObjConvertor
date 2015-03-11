@@ -1,7 +1,7 @@
 package net.ilyi;
 
-import mobi.tarantino.Point;
-import mobi.tarantino.Vector;
+import mobi.tarantino.model.Point;
+import mobi.tarantino.model.Vector;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
@@ -11,7 +11,6 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.util.glu.GLU;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 
@@ -19,7 +18,6 @@ import java.awt.*;
 import java.nio.ByteBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.util.glu.GLU.gluLookAt;
 import static org.lwjgl.util.glu.GLU.gluOrtho2D;
 
 public class QuaternionRotation {

@@ -1,15 +1,19 @@
 package mobi.tarantino;
 
+import mobi.tarantino.collection.Figure;
+import mobi.tarantino.model.Point;
+import mobi.tarantino.model.Vector;
 import net.ilyi.QuaternionRotation2;
 import org.junit.Test;
 
+import static mobi.tarantino.PlateUtils.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
  * Created by kolipass on 04.03.15.
  */
-public class QuaternionRotation2Test {
+public class PlateUtilsTest {
 
     @Test
     public void testLineContainsPoint() {
@@ -31,10 +35,8 @@ public class QuaternionRotation2Test {
                 );
 
         float angle1 = (float) Vector.angle(zeroUnitVector, new Vector(start, end));
-        Figure defaultPlane = new Figure(QuaternionRotation2.rotate(Main.makePlanes(edgeCount, radius), QuaternionRotation2.getUnitQuaternion(unitVector, angle1)));
+        Figure defaultPlane = new Figure(rotate(makePlanes(edgeCount, radius), getUnitQuaternion(unitVector, angle1)));
 
-        angle1 = (float) Vector.angle(zeroUnitVector, new Vector(start, end));
-//        drawFigure(defaultPlane);
         Figure bottom = Figure.move(defaultPlane, new Vector(zero, start));
 
         assertTrue(Point.plateContainsPoint(start, bottom.points.stream().toArray(Point[]::new)));

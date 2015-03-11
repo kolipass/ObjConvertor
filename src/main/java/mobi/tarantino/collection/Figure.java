@@ -1,4 +1,7 @@
-package mobi.tarantino;
+package mobi.tarantino.collection;
+
+import mobi.tarantino.model.Point;
+import mobi.tarantino.model.Vector;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,7 +12,7 @@ import java.util.List;
  * Модель, описывающая фигуру
  */
 public class Figure implements Iterable<Point> {
-    List<Point> points;
+    public List<Point> points = new ArrayList<>();
 
     public Figure(List<Point> points) {
         this.points = points;

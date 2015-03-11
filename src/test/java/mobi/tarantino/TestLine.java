@@ -1,5 +1,6 @@
 package mobi.tarantino;
 
+import mobi.tarantino.model.Point;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;

@@ -1,6 +1,6 @@
 package net.ilyi;
 
-import mobi.tarantino.Point;
+import mobi.tarantino.model.Point;
 
 public class Quaternion {
     public double r, i, j, k;

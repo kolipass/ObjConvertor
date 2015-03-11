@@ -1,5 +1,7 @@
 package mobi.tarantino;
 
+import mobi.tarantino.model.Point;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -49,9 +51,7 @@ public class TempFileReader {
     }
 
     public static void read(String path) {
-        Scanner in = null;
-        try {
-            in = new Scanner(new File(path));
+        try (Scanner in = new Scanner(new File(path))) {
             while (in.hasNext()) {
                 System.out.println(in.next());
             }

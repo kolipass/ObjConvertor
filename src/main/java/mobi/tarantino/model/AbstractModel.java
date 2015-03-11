@@ -1,4 +1,4 @@
-package mobi.tarantino;
+package mobi.tarantino.model;
 
 /**
  * Created by kolipass on 28.12.14.

@@ -1,4 +1,6 @@
-package mobi.tarantino;
+package mobi.tarantino.model;
+
+import mobi.tarantino.PlateUtils;
 
 import java.math.BigDecimal;
 
@@ -82,7 +84,7 @@ public class Point extends AbstractModel {
         };
 
 
-        return Main.det(matrix).equals(BigDecimal.ZERO);
+        return PlateUtils.det(matrix).equals(BigDecimal.ZERO);
 
     }
 

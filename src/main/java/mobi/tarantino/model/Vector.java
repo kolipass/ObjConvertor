@@ -1,11 +1,17 @@
-package mobi.tarantino;
+package mobi.tarantino.model;
 
 /**
  * Created by kolipass on 01.02.15.
  */
 public class Vector extends Point {
 
+    public static final Vector NaN = new Vector(Float.NaN, Float.NaN, Float.NaN);
+
     public Vector() {
+    }
+
+    public Vector(float x, float y, float z) {
+        super(x, y, z);
     }
 
     public Vector(Point start, Point end) {

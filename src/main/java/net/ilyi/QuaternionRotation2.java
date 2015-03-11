@@ -1,8 +1,10 @@
 package net.ilyi;
 
-import mobi.tarantino.*;
-
-import java.util.List;
+import mobi.tarantino.FigureFactory;
+import mobi.tarantino.PlateUtils;
+import mobi.tarantino.collection.Figure;
+import mobi.tarantino.model.Point;
+import mobi.tarantino.model.Vector;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -10,7 +12,6 @@ import static org.lwjgl.opengl.GL11.*;
  * Предполагает запускалку вращения вокруг вектора
  */
 public class QuaternionRotation2 extends QuaternionRotation {
-
 
     public QuaternionRotation2(String arg) {
         super(arg);
@@ -31,8 +32,8 @@ public class QuaternionRotation2 extends QuaternionRotation {
 
         Point zero = new Point(0, 0, 0);
         Point zero1 = new Point(0, 0, 1);
-        Point start = new Point(-1, -1, 0);
-        Point end = new Point(1, 1, 1);
+        Point start = new Point(0, 0, 0);
+        Point end = new Point(0, 0, 1);
         Point end2 = new Point(2, 0, 1);
 
         Vector zeroUnitVector = new Vector(zero, zero1);
@@ -60,7 +61,7 @@ public class QuaternionRotation2 extends QuaternionRotation {
         coordinateSystem();
         glColor3f(0.5f, 0.5f, 0.5f);
 
-        Figure defaultPlane = new Figure(rotate(Main.makePlanes(edgeCount, radius), getUnitQuaternion(unitVector, angle1)));
+        Figure defaultPlane = PlateUtils.makeDefaultPlane(angle1, radius, edgeCount, unitVector);
 
 //        drawFigure(defaultPlane);
         Figure bottom = Figure.move(defaultPlane, new Vector(zero, start));
@@ -70,7 +71,7 @@ public class QuaternionRotation2 extends QuaternionRotation {
         drawFigure(top);
 
         glColor3f(0.2f, 0.2f, 0.2f);
-//        FigureFactory.makeFace(top, bottom).forEach(this::drawFigure);
+        FigureFactory.makeFace(top, bottom).forEach(this::drawFigure);
 
         glTranslatef(0.0f, 0.0f, -1.0f);
         glColor3f(0.4f, 0.4f, 0.4f);
@@ -88,28 +89,12 @@ public class QuaternionRotation2 extends QuaternionRotation {
         };
     }
 
-    public static Quaternion getUnitQuaternion(Vector vector, double phi) {
-        double cosphi = Math.cos(phi / 2.0);
-        double sinphi = Math.sin(phi / 2.0);
-        return new Quaternion(cosphi, vector.x * sinphi, vector.y * sinphi, vector.z * sinphi).unit();
-    }
-
     private void drawLine(Point start, Point end) {
         glBegin(GL_LINES);
         glColor3f(1.0f, 0.0f, 0.0f);
         glVertex3f(start.x, start.y, start.z);
         glVertex3f(end.x, end.y, end.z);
         glEnd();
-    }
-
-    public static Point[] rotate(Point[] trianglePoints, Quaternion q) {
-        Point[] figure = new Point[trianglePoints.length];
-        for (int i = 0; i < trianglePoints.length; i++) {
-            Quaternion p = new Quaternion(trianglePoints[i], 0.0);
-            p = q.mul(p.mul(q.inverse()));
-            figure[i] = new Point(p.i, p.j, p.k);
-        }
-        return figure;
     }
 
     private void drawFigure(Point[] trianglePoints) {

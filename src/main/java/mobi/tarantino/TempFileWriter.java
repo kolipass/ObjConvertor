@@ -5,16 +5,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 /**
  * Created by kolipass on 28.12.14.
  */
-public class TempFileWriter<N extends AbstractModel> {
+public class TempFileWriter<N> {
     private String aFileName;
-    private List<N> points;
+    private N points;
 
-    public TempFileWriter(String aFileName, List<N> points) {
+    public TempFileWriter(String aFileName, N points) {
         this.aFileName = aFileName;
         this.points = points;
     }
@@ -22,10 +21,7 @@ public class TempFileWriter<N extends AbstractModel> {
     void write() throws IOException {
         Path path = Paths.get(aFileName);
         try (BufferedWriter writer = Files.newBufferedWriter(path)) {
-            for (N line : points) {
-                writer.write(line.toString());
-                writer.newLine();
-            }
+            writer.write(points.toString());
         }
     }
 }

@@ -1,7 +1,8 @@
-package mobi.tarantino;
+package mobi.tarantino.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * obj face (f)
@@ -26,5 +27,12 @@ public class Face extends AbstractModel {
         }
 
         return f;
+    }
+
+    public static Face shift(Face face, int position) {
+        Face result = new Face();
+        if (face.poinstIndexs != null)
+            result.poinstIndexs.addAll(face.poinstIndexs.stream().map(i -> i + position).collect(Collectors.toList()));
+        return result;
     }
 }
