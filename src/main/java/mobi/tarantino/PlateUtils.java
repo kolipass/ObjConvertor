@@ -2,16 +2,12 @@ package mobi.tarantino;
 
 import mobi.tarantino.collection.Figure;
 import mobi.tarantino.collection.ObjFigure;
-import mobi.tarantino.model.AbstractModel;
-import mobi.tarantino.model.Face;
 import mobi.tarantino.model.Point;
 import mobi.tarantino.model.Vector;
 import net.ilyi.Quaternion;
 
-import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -53,9 +49,9 @@ public abstract class PlateUtils {
     /**
      * Строит цилиндр между точками
      *
-     * @param points набор точек, которые последовательно обходятся
+     * @param points    набор точек, которые последовательно обходятся
      * @param edgeCount колличество углов фигуры
-     * @param radius радиус окружности описанной вокруг фигуры
+     * @param radius    радиус окружности описанной вокруг фигуры
      * @return м
      */
     public static ObjFigure cylindrate(List<Point> points, int edgeCount, float radius) {
@@ -64,7 +60,13 @@ public abstract class PlateUtils {
         Point lastPoint = null;
         for (Point currentPoint : points) {
             if (lastPoint != null) {
-                figure.addFigure(makePlates(lastPoint, currentPoint, edgeCount, radius));
+
+                if (edgeCount >= 3) {
+                    figure.addFigure(makePlates(lastPoint, currentPoint, edgeCount, radius));
+                } else if (edgeCount <= 2) {
+                    figure.addFigure(shift(Arrays.asList(lastPoint, currentPoint), radius));
+                }
+
             }
             lastPoint = currentPoint;
         }
@@ -80,7 +82,6 @@ public abstract class PlateUtils {
 
         Vector unitVector =
                 Vector.makeUnitVector(
-//                        zeroUnitVector
                         Vector.mul(vector, zeroUnitVector)
                 );
 
@@ -98,8 +99,9 @@ public abstract class PlateUtils {
     }
 
     /**
-     * Фабричный метод рисует вписанную в окружность правильную фигуру,повернутую на угол angel понаправлению вектора unitVector
+     * Фабричный метод рисует вписанную в окружность правильную фигуру,повернутую на угол angle понаправлению вектора unitVector
      * Если угл равен нулю или единичный вектор не задан, то поворота не будет
+     *
      * @param radius     радиус
      * @param edgeCount  колличество углов
      * @param unitVector единичный вектор
@@ -129,40 +131,32 @@ public abstract class PlateUtils {
         return figure;
     }
 
-    public static List<AbstractModel> shift(List<Point> points) {
-        ArrayList<Point> shiftedList = new ArrayList<>();
-        ArrayList<Face> shiftedFaces = new ArrayList<>();
+    /**
+     * "Растягивает" отрезоки в плоскость добавлением точек.смещенных относительнозаданной на radius. создается как положительное смещение, таки отрицательное
+     * @param points набор оригинальных точек (A,B,C...)
+     * @param radius радиус смещения
+     * @return набор точек в порядке  (A+r,B+r,B-r,A-r, B+r,C+r,C-r,B-r ...)
+     */
+    public static Figure shift(List<Point> points, float radius) {
+        Figure figure = new Figure();
 
-        Point lastPoint = null;
+        Point lastPoint;
         Point currentPoint = null;
-
 
         for (Point point : points) {
             lastPoint = currentPoint;
             currentPoint = point;
 
             if (lastPoint != null) {
-                Face face = new Face();
-                shiftedFaces.add(face);
 
-                shiftedList.add(lastPoint);
-                face.poinstIndexs.add(shiftedList.size());
-                shiftedList.add(lastPoint.shift(0.01f));
-                face.poinstIndexs.add(shiftedList.size());
+                figure.add(lastPoint.shift(radius));
+                figure.add(currentPoint.shift(radius));
 
-                shiftedList.add(currentPoint);
-                face.poinstIndexs.add(shiftedList.size());
-                shiftedList.add(currentPoint.shift(0.01f));
-                face.poinstIndexs.add(shiftedList.size());
-
+                figure.add(currentPoint.shift(-2 * radius));
+                figure.add(lastPoint.shift(-2 * radius));
             }
         }
-
-        List<AbstractModel> models = new ArrayList<>();
-        models.addAll(shiftedList);
-        models.addAll(shiftedFaces);
-
-        return models;
+        return figure;
     }
 
     /**
