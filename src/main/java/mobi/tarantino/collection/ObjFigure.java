@@ -17,6 +17,9 @@ public class ObjFigure extends Figure {
     public Iterator<Point> iterator() {
         return points != null ? points.iterator() : null;
     }
+    public Iterator<Face> faceIterator() {
+        return faces != null ? faces.iterator() : null;
+    }
 
     public int size() {
         return super.size() + (faces != null ? faces.size() : 0);
@@ -34,7 +37,7 @@ public class ObjFigure extends Figure {
         points.addAll(faceFigure.points);
 
         Face face = new Face();
-        for (int i = 1; i <= faceFigure.size(); i++) {
+        for (int i = 0; i < faceFigure.size(); i++) {
             face.poinstIndexs.add(i);
         }
 
@@ -71,7 +74,7 @@ public class ObjFigure extends Figure {
             if (faces != null && faces.size() > 0) {
                 result += "\n\n";
                 for (Iterator<Face> iterator = faces.iterator(); iterator.hasNext(); ) {
-                    Face point = iterator.next();
+                    Face point = Face.shift(iterator.next(), 1);
                     result += point.toString();
                     if (iterator.hasNext()) {
                         result += "\n";
@@ -80,5 +83,17 @@ public class ObjFigure extends Figure {
             }
             return result;
         }
+    }
+
+    public Figure getFigurePoints(Face face) {
+        if (face == null) {
+            return null;
+        }
+        Figure result = new Figure();
+        for (Integer position : face.poinstIndexs) {
+            result.add(get(position));
+        }
+
+        return result;
     }
 }
