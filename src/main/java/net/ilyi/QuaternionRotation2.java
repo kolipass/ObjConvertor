@@ -1,10 +1,14 @@
 package net.ilyi;
 
-import mobi.tarantino.FigureFactory;
+import mobi.tarantino.IcoSphereCreator;
 import mobi.tarantino.PlateUtils;
 import mobi.tarantino.collection.Figure;
+import mobi.tarantino.collection.ObjFigure;
+import mobi.tarantino.model.Face;
 import mobi.tarantino.model.Point;
 import mobi.tarantino.model.Vector;
+
+import java.util.function.Consumer;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -63,19 +67,21 @@ public class QuaternionRotation2 extends QuaternionRotation {
 
         Figure defaultPlane = PlateUtils.makeDefaultPlane(angle1, radius, edgeCount, unitVector);
 
-//        drawFigure(defaultPlane);
-        Figure bottom = Figure.move(defaultPlane, new Vector(zero, start));
-        drawFigure(bottom);
+        ObjFigure sphere = new IcoSphereCreator().create(1, 1);
 
-        Figure top = Figure.move(defaultPlane, new Vector(zero, end));
-        drawFigure(top);
-
-        glColor3f(0.2f, 0.2f, 0.2f);
-        FigureFactory.makeFace(top, bottom).forEach(this::drawFigure);
-
-        glTranslatef(0.0f, 0.0f, -1.0f);
-        glColor3f(0.4f, 0.4f, 0.4f);
-        drawLine(start, end);
+        drawFigure(sphere);
+//        Figure bottom = Figure.move(defaultPlane, new Vector(zero, start));
+//        drawFigure(bottom);
+//
+//        Figure top = Figure.move(defaultPlane, new Vector(zero, end));
+//        drawFigure(top);
+//
+//        glColor3f(0.2f, 0.2f, 0.2f);
+//        FigureFactory.makeFace(top, bottom).forEach(this::drawFigure);
+//
+//        glTranslatef(0.0f, 0.0f, -1.0f);
+//        glColor3f(0.4f, 0.4f, 0.4f);
+//        drawLine(start, end);
 //        angle1 += 0.01f * delta;
 
 
@@ -84,8 +90,8 @@ public class QuaternionRotation2 extends QuaternionRotation {
                 "phi: " + phi,
                 "start: " + start + " end: " + end,
                 "defaultPlane: " + defaultPlane,
-                "top: " + top,
-                "bottom: " + bottom,
+//                "top: " + top,
+//                "bottom: " + bottom,
         };
     }
 
@@ -103,6 +109,15 @@ public class QuaternionRotation2 extends QuaternionRotation {
             glVertex3d(trianglePoints[i].x, trianglePoints[i].y, trianglePoints[i].z);
         }
         glEnd();
+    }
+
+    private void drawFigure(ObjFigure figure) {
+        figure.faceIterator().forEachRemaining(new Consumer<Face>() {
+            @Override
+            public void accept(Face face) {
+                drawFigure(figure.getFigurePoints(face));
+            }
+        });
     }
 
     private void drawFigure(Figure figure) {

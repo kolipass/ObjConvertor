@@ -61,6 +61,7 @@ public class Point extends AbstractModel {
         point.z = this.z + shiftValue;
         return point;
     }
+
     public Point mul(float shiftValue) {
         Point point = new Point();
         point.x = this.x * shiftValue;

@@ -19,6 +19,12 @@ public class Face extends AbstractModel {
     public Face(Integer... points) {
         this(Arrays.asList(points));
     }
+    public Face(int... points) {
+        this();
+        for (int point : points) {
+            poinstIndexs.add(point);
+        }
+    }
 
     public Integer get(int index) {
         return poinstIndexs.get(index);

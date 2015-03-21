@@ -17,6 +17,7 @@ public class ObjFigure extends Figure {
     public Iterator<Point> iterator() {
         return points != null ? points.iterator() : null;
     }
+
     public Iterator<Face> faceIterator() {
         return faces != null ? faces.iterator() : null;
     }
@@ -33,6 +34,10 @@ public class ObjFigure extends Figure {
     }
 
     public void addFigure(Figure faceFigure) {
+        if (faceFigure != null && faceFigure instanceof ObjFigure) {
+            addFigure((ObjFigure) faceFigure);
+            return;
+        }
         int size = super.size();
         points.addAll(faceFigure.points);
 

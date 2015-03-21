@@ -1,11 +1,14 @@
 package mobi.tarantino;
 
+import bsim.geometry.BSimSphereMesh;
+import mobi.tarantino.collection.BSimToObjFigure;
 import mobi.tarantino.collection.Figure;
 import mobi.tarantino.collection.ObjFigure;
 import mobi.tarantino.model.Point;
 import mobi.tarantino.model.Vector;
 import net.ilyi.Quaternion;
 
+import javax.vecmath.Vector3d;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -14,6 +17,8 @@ import java.util.List;
  * Created by kolipass on 11.03.15.
  */
 public abstract class PlateUtils {
+    enum NODE_TYPE {ISO_SPHERE, FOLLOW, NONE}
+
     public static final double pi = Math.acos(-1);
 
     /**
@@ -54,25 +59,73 @@ public abstract class PlateUtils {
      * @param radius    радиус окружности описанной вокруг фигуры
      * @return м
      */
-    public static ObjFigure cylindrate(List<Point> points, int edgeCount, float radius) {
+    public static ObjFigure cylindrate(List<Point> points, int edgeCount, float radius, NODE_TYPE nodeType) {
         ObjFigure figure = new ObjFigure();
 
         Point lastPoint = null;
+        Figure lastFigure = null;
+        Figure currentFigure = null;
+
         for (Point currentPoint : points) {
             if (lastPoint != null) {
 
-                if (edgeCount >= 3) {
-                    figure.addFigure(makePlates(lastPoint, currentPoint, edgeCount, radius));
-                } else if (edgeCount <= 2) {
-                    figure.addFigure(shift(Arrays.asList(lastPoint, currentPoint), radius));
-                }
+                if (edgeCount >= 3) currentFigure = makePlates(lastPoint, currentPoint, edgeCount, radius);
+                else currentFigure = shift(Arrays.asList(lastPoint, currentPoint), radius);
 
+                figure.addFigure(currentFigure);
+                makeFollow(radius, nodeType, figure, lastFigure, currentFigure, currentPoint);
             }
+
             lastPoint = currentPoint;
+            lastFigure = currentFigure;
         }
 
         return figure;
     }
+
+    private static void makeFollow(float radius, NODE_TYPE nodeType, ObjFigure figure, Figure lastFigure, Figure currentFigure, Point currentPoint) {
+        if (lastFigure != null)
+
+            switch (nodeType) {
+                case ISO_SPHERE:
+                    Figure node =
+                            BSimToObjFigure.BSimToObjFigure(
+                                    new BSimSphereMesh(
+                                            new Vector3d(currentPoint.x, currentPoint.y, currentPoint.z), radius, 1));
+
+                    figure.addFigure(node);
+                    break;
+                case FOLLOW:
+                    node = makeFollow(lastFigure, currentFigure);
+                    figure.addFigure(node);
+                    break;
+                case NONE:
+                    break;
+            }
+    }
+
+    private static Figure makeFollow(Figure lastFigure, Figure currentFigure) {
+        Figure figure = new Figure();
+
+        int size = lastFigure.points.size();
+
+        int lastPointId = size - 1;
+        int currentPointId = 0;
+
+        for (int i = 0; i < size; i++) {
+
+            figure.add(lastFigure.get(lastPointId));
+            figure.add(currentFigure.get(lastPointId));
+
+
+            figure.add(lastFigure.get(currentPointId));
+            figure.add(currentFigure.get(currentPointId));
+
+            currentPointId = lastPointId;
+        }
+        return figure;
+    }
+
 
     public static ObjFigure makePlates(Point start, Point end, int edgeCount, float radius) {
         Point zero = new Point(0, 0, 0);
@@ -133,12 +186,13 @@ public abstract class PlateUtils {
 
     /**
      * "Растягивает" отрезоки в плоскость добавлением точек.смещенных относительнозаданной на radius. создается как положительное смещение, таки отрицательное
+     *
      * @param points набор оригинальных точек (A,B,C...)
      * @param radius радиус смещения
      * @return набор точек в порядке  (A+r,B+r,B-r,A-r, B+r,C+r,C-r,B-r ...)
      */
-    public static Figure shift(List<Point> points, float radius) {
-        Figure figure = new Figure();
+    public static ObjFigure shift(List<Point> points, float radius) {
+        ObjFigure figure = new ObjFigure();
 
         Point lastPoint;
         Point currentPoint = null;
