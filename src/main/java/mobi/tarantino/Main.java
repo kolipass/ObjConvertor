@@ -11,7 +11,7 @@ public class Main {
             for (String filepath : args) {
                 File source = new File(filepath);
                 if (source.exists()) {
-                    ObjFigure pointList = PlateUtils.cylindrate(new TempFileReader(source).read(), 12, 0.1f, PlateUtils.NODE_TYPE.ISO_SPHERE);
+                    ObjFigure pointList = PlateUtils.cylindrate(new TempFileReader(source).read(), 4, 0.1f, PlateUtils.NODE_TYPE.FOLLOW);
                     new TempFileWriter<>(filepath + ".obj", pointList).write();
                 } else System.out.println("file not found");
             }

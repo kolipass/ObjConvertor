@@ -4,6 +4,7 @@ import bsim.geometry.BSimSphereMesh;
 import mobi.tarantino.collection.BSimToObjFigure;
 import mobi.tarantino.collection.Figure;
 import mobi.tarantino.collection.ObjFigure;
+import mobi.tarantino.collection.SpecificFigure;
 import mobi.tarantino.model.Point;
 import mobi.tarantino.model.Vector;
 import net.ilyi.Quaternion;
@@ -17,6 +18,7 @@ import java.util.List;
  * Created by kolipass on 11.03.15.
  */
 public abstract class PlateUtils {
+
     enum NODE_TYPE {ISO_SPHERE, FOLLOW, NONE}
 
     public static final double pi = Math.acos(-1);
@@ -60,11 +62,11 @@ public abstract class PlateUtils {
      * @return м
      */
     public static ObjFigure cylindrate(List<Point> points, int edgeCount, float radius, NODE_TYPE nodeType) {
-        ObjFigure figure = new ObjFigure();
+        SpecificFigure figure = new SpecificFigure();
 
         Point lastPoint = null;
-        Figure lastFigure = null;
         Figure currentFigure = null;
+        Figure lastF = null;
 
         for (Point currentPoint : points) {
             if (lastPoint != null) {
@@ -72,62 +74,75 @@ public abstract class PlateUtils {
                 if (edgeCount >= 3) currentFigure = makePlates(lastPoint, currentPoint, edgeCount, radius);
                 else currentFigure = shift(Arrays.asList(lastPoint, currentPoint), radius);
 
-                figure.addFigure(currentFigure);
-                makeFollow(radius, nodeType, figure, lastFigure, currentFigure, currentPoint);
+                figure.addSpecificFigure(currentFigure, true);
             }
+            makeFollow(radius, nodeType, figure, currentPoint);
 
             lastPoint = currentPoint;
-            lastFigure = currentFigure;
         }
 
         return figure;
     }
 
-    private static void makeFollow(float radius, NODE_TYPE nodeType, ObjFigure figure, Figure lastFigure, Figure currentFigure, Point currentPoint) {
-        if (lastFigure != null)
+    private static void makeFollow(float radius, NODE_TYPE nodeType, SpecificFigure figure, Point currentPoint) {
 
-            switch (nodeType) {
-                case ISO_SPHERE:
-                    Figure node =
-                            BSimToObjFigure.BSimToObjFigure(
-                                    new BSimSphereMesh(
-                                            new Vector3d(currentPoint.x, currentPoint.y, currentPoint.z), radius, 1));
 
+        switch (nodeType) {
+            case ISO_SPHERE:
+                Figure node =
+                        BSimToObjFigure.BSimToObjFigure(
+                                new BSimSphereMesh(
+                                        new Vector3d(currentPoint.x, currentPoint.y, currentPoint.z), radius, 1));
+
+                figure.addFigure(node);
+                break;
+            case FOLLOW:
+                int stubCount = figure.getSpecificFigures().size();
+
+                if (stubCount > 1) {
+                    Figure current = ((SpecificFigure) figure.getSpecificFigure(stubCount - 1)).getSpecificFigure(1);
+                    Figure last = ((SpecificFigure) figure.getSpecificFigure(stubCount - 2)).getSpecificFigure(0);
+//                    figure.addFigure(current);
+//
+
+                    node = makeFollow(current, last);
                     figure.addFigure(node);
-                    break;
-                case FOLLOW:
-                    node = makeFollow(lastFigure, currentFigure);
-                    figure.addFigure(node);
-                    break;
-                case NONE:
-                    break;
-            }
+                }
+                break;
+            case NONE:
+                break;
+        }
     }
 
-    private static Figure makeFollow(Figure lastFigure, Figure currentFigure) {
-        Figure figure = new Figure();
+    public static ObjFigure makeFollow(Figure lastFigure, Figure currentFigure) {
+        ObjFigure result = new ObjFigure();
 
         int size = lastFigure.points.size();
 
         int lastPointId = size - 1;
-        int currentPointId = 0;
+//        int currentPointId = 0;
 
         for (int i = 0; i < size; i++) {
+            Figure figure = new Figure();
+//            if (i == 2) {
 
             figure.add(lastFigure.get(lastPointId));
             figure.add(currentFigure.get(lastPointId));
 
 
-            figure.add(lastFigure.get(currentPointId));
-            figure.add(currentFigure.get(currentPointId));
+            figure.add(currentFigure.get(i));
+            figure.add(lastFigure.get(i));
 
-            currentPointId = lastPointId;
+            result.addFigure(figure);
+//            }
+            lastPointId = i;
+
         }
-        return figure;
+        return result;
     }
 
 
-    public static ObjFigure makePlates(Point start, Point end, int edgeCount, float radius) {
+    public static SpecificFigure makePlates(Point start, Point end, int edgeCount, float radius) {
         Point zero = new Point(0, 0, 0);
         Point zero1 = new Point(0, 0, 1);
         Vector zeroUnitVector = new Vector(zero, zero1);
@@ -146,7 +161,8 @@ public abstract class PlateUtils {
         Figure bottom = Figure.move(defaultPlane, new Vector(zero, start));
         Figure top = Figure.move(defaultPlane, new Vector(zero, end));
 
-        ObjFigure result = new ObjFigure();
+        SpecificFigure result = new SpecificFigure();
+        result.addSpecificFigure(top, true).addSpecificFigure(bottom, true);
         FigureFactory.makeFace(top, bottom).forEach(result::addFigure);
         return result;
     }

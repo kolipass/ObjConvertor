@@ -33,10 +33,10 @@ public class ObjFigure extends Figure {
         faces.add(face);
     }
 
-    public void addFigure(Figure faceFigure) {
+    public ObjFigure addFigure(Figure faceFigure) {
         if (faceFigure != null && faceFigure instanceof ObjFigure) {
             addFigure((ObjFigure) faceFigure);
-            return;
+            return this;
         }
         int size = super.size();
         points.addAll(faceFigure.points);
@@ -47,7 +47,7 @@ public class ObjFigure extends Figure {
         }
 
         addFace(Face.shift(face, size));
-
+        return this;
     }
 
     public void addFigure(ObjFigure figure) {

@@ -7,6 +7,7 @@ import mobi.tarantino.collection.ObjFigure;
 import mobi.tarantino.model.Face;
 import mobi.tarantino.model.Point;
 import mobi.tarantino.model.Vector;
+import org.lwjgl.Sys;
 
 import java.util.function.Consumer;
 
@@ -37,7 +38,7 @@ public class QuaternionRotation2 extends QuaternionRotation {
         Point zero = new Point(0, 0, 0);
         Point zero1 = new Point(0, 0, 1);
         Point start = new Point(0, 0, 0);
-        Point end = new Point(0, 0, 1);
+        Point end = new Point(1, 1, 1);
         Point end2 = new Point(2, 0, 1);
 
         Vector zeroUnitVector = new Vector(zero, zero1);
@@ -69,12 +70,16 @@ public class QuaternionRotation2 extends QuaternionRotation {
 
         ObjFigure sphere = new IcoSphereCreator().create(1, 1);
 
-        drawFigure(sphere);
-//        Figure bottom = Figure.move(defaultPlane, new Vector(zero, start));
+//        drawFigure(sphere);
+        Figure bottom = Figure.move(defaultPlane, new Vector(zero, start));
 //        drawFigure(bottom);
 //
-//        Figure top = Figure.move(defaultPlane, new Vector(zero, end));
+        Figure top = Figure.move(defaultPlane, new Vector(zero, end));
 //        drawFigure(top);
+        Figure figure=PlateUtils.makeFollow(bottom, top);
+        drawFigure(figure);
+        System.out.println(figure);
+//        System.out.println(new ObjFigure().addFigure(bottom).addFigure(top));
 //
 //        glColor3f(0.2f, 0.2f, 0.2f);
 //        FigureFactory.makeFace(top, bottom).forEach(this::drawFigure);
@@ -125,7 +130,7 @@ public class QuaternionRotation2 extends QuaternionRotation {
         int i = -1;
         for (Point point : figure) {
             i++;
-            glColor3f(i == 0 ? 1.0f : 0, i == 1 ? 1.0f : 0, i == 2 ? 1.0f : 0);
+//            glColor3f(i == 0 ? 1.0f : 0, i == 1 ? 1.0f : 0, i == 2 ? 1.0f : 0);
             glVertex3d(point.x, point.y, point.z);
         }
         glEnd();
