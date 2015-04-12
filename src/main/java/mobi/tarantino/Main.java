@@ -12,7 +12,7 @@ public class Main {
             for (String filepath : args) {
                 File source = new File(filepath);
                 if (source.exists()) {
-                    ObjFigure pointList = PlateUtils.cylindrate(new TempFileReader(source).read(), 4, 0.1f, PlateUtils.NODE_TYPE.FOLLOW);
+                    ObjFigure pointList = PlateUtils.cylindrate(new TempFileReader(source).read(), Config.getInstance());
                     new TempFileWriter<>(filepath + ".obj", pointList).write();
                     new TempFileWriter<>(filepath + "_optimized" + ".obj", new OptimizedObjFigure(pointList)).write();
                 } else System.out.println("file not found");

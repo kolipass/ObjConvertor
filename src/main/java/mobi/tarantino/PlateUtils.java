@@ -19,8 +19,6 @@ import java.util.List;
  */
 public abstract class PlateUtils {
 
-    enum NODE_TYPE {ISO_SPHERE, FOLLOW, NONE}
-
     public static final double pi = Math.acos(-1);
 
     /**
@@ -51,6 +49,10 @@ public abstract class PlateUtils {
 
     public static Point[] makePlanes(int edgeCount, double radius) {
         return makePlanes(new Point(0, 0, 0), edgeCount, radius);
+    }
+
+    public static ObjFigure cylindrate(List<Point> points, Config config) {
+        return cylindrate(points, config.edgeCount, config.radius, config.nodeType);
     }
 
     /**
@@ -140,7 +142,6 @@ public abstract class PlateUtils {
         }
         return result;
     }
-
 
     public static SpecificFigure makePlates(Point start, Point end, int edgeCount, float radius) {
         Point zero = new Point(0, 0, 0);
@@ -321,4 +322,6 @@ public abstract class PlateUtils {
         }
 
     }
+
+    enum NODE_TYPE {ISO_SPHERE, FOLLOW, NONE}
 }
