@@ -76,19 +76,32 @@ public class ObjFigure extends Figure {
                 if (iterator.hasNext()) result += "\n";
             }
 
-            if (faces != null && faces.size() > 0) {
-                result += "\n\n";
-                for (Iterator<Face> iterator = faces.iterator(); iterator.hasNext(); ) {
-                    Face point = Face.shift(iterator.next(), 1);
-                    result += point.toString();
-                    if (iterator.hasNext()) {
-                        result += "\n";
-                    }
-                }
-            }
+            result += facesToString(faces);
             return result;
         }
     }
+
+    private String facesToString(List<Face> faces) {
+        String result = "";
+        if (faces != null && faces.size() > 0) {
+            result += "\n\n";
+            for (Iterator<Face> iterator = faces.iterator(); iterator.hasNext(); ) {
+                result += faceToString(iterator.next());
+                if (iterator.hasNext()) {
+                    result += "\n";
+                }
+            }
+        }
+        return result;
+    }
+
+    protected String faceToString(Face face) {
+        String result = "";
+        Face point = Face.shift(face, 1);
+        result += point.toString();
+        return result;
+    }
+
 
     public Figure getFigurePoints(Face face) {
         if (face == null) {

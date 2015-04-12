@@ -1,7 +1,6 @@
 package mobi.tarantino.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,9 +15,10 @@ public class Face extends AbstractModel {
         this.poinstIndexs = points;
     }
 
-    public Face(Integer... points) {
-        this(Arrays.asList(points));
-    }
+//    public Face(Integer... points) {
+//        this(Arrays.asList(points));
+//    }
+
     public Face(int... points) {
         this();
         for (int point : points) {
@@ -26,12 +26,19 @@ public class Face extends AbstractModel {
         }
     }
 
-    public Integer get(int index) {
-        return poinstIndexs.get(index);
-    }
-
     public Face() {
         this.poinstIndexs = new ArrayList<>();
+    }
+
+    public static Face shift(Face face, int position) {
+        Face result = new Face();
+        if (face.poinstIndexs != null)
+            result.poinstIndexs.addAll(face.poinstIndexs.stream().map(i -> i + position).collect(Collectors.toList()));
+        return result;
+    }
+
+    public Integer get(int index) {
+        return poinstIndexs.get(index);
     }
 
     @Override
@@ -42,12 +49,5 @@ public class Face extends AbstractModel {
         }
 
         return f;
-    }
-
-    public static Face shift(Face face, int position) {
-        Face result = new Face();
-        if (face.poinstIndexs != null)
-            result.poinstIndexs.addAll(face.poinstIndexs.stream().map(i -> i + position).collect(Collectors.toList()));
-        return result;
     }
 }
