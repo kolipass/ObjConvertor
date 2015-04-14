@@ -1,5 +1,6 @@
 package mobi.tarantino.collection;
 
+import mobi.tarantino.Config;
 import mobi.tarantino.model.AbstractModel;
 import mobi.tarantino.model.Face;
 import mobi.tarantino.model.ObjComment;
@@ -15,6 +16,15 @@ import java.util.List;
 public class ObjFigure extends Figure {
     protected List<ObjComment> comments = new ArrayList<>();
     protected List<Face> faces;
+    protected Config config;
+
+    public ObjFigure(Config config) {
+        this.config = config;
+    }
+
+    public ObjFigure() {
+        this(Config.getInstance());
+    }
 
     public void addComment(ObjComment comment) {
         comments.add(comment);
@@ -80,7 +90,8 @@ public class ObjFigure extends Figure {
         if (points == null || points.size() == 0 && comments.isEmpty())
             return "Null";
         else {
-            String result = modelsToString(comments);
+            String result;
+            result = commentsToString();
 
             if (!result.isEmpty()) {
                 result += "\n\n";
@@ -96,6 +107,22 @@ public class ObjFigure extends Figure {
             result += facesToString(faces);
             return result;
         }
+    }
+
+    protected String commentsToString() {
+        String result = modelsToString(comments);
+        if ("true".equals(config.get(Config.Field.PRINT_CONFIG))) {
+            result += "\n" + new ObjComment(" ***Config*** ") + "\n" + config.toObjComment().toString();
+        }
+        if ("true".equals(config.get(Config.Field.PRINT_EXTRACTS))) {
+            result += "\n" + new ObjComment(" ***Figure*** ").toString() + "\n" + printExtracts();
+        }
+
+        return result;
+    }
+
+    protected ObjComment printExtracts() {
+        return new ObjComment("points size: " + points.size(), "faces size: " + faces.size());
     }
 
     protected <N extends AbstractModel> String modelsToString(List<N> faces) {

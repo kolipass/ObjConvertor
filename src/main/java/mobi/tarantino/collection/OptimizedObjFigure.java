@@ -2,6 +2,7 @@ package mobi.tarantino.collection;
 
 import mobi.tarantino.model.BigDecimalPoint;
 import mobi.tarantino.model.Face;
+import mobi.tarantino.model.ObjComment;
 import mobi.tarantino.model.Point;
 
 import java.util.*;
@@ -47,13 +48,14 @@ public class OptimizedObjFigure extends ObjFigure {
         if (points == null || points.size() == 0)
             return "Null";
         else {
-            String result = modelsToString(comments);
+            pointSet = makeSet(points.iterator());
+
+
+            String result = commentsToString();
 
             if (!result.isEmpty()) {
                 result += "\n\n";
             }
-
-            pointSet = makeSet(points.iterator());
 
             for (Iterator<BigDecimalPoint> iterator = pointSet.iterator(); iterator.hasNext(); ) {
                 BigDecimalPoint point = iterator.next();
@@ -74,5 +76,10 @@ public class OptimizedObjFigure extends ObjFigure {
             }
             return result;
         }
+    }
+
+    @Override
+    protected ObjComment printExtracts() {
+        return super.printExtracts().add("pointSet size: " + pointSet.size());
     }
 }

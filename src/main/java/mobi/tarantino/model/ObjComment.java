@@ -1,6 +1,7 @@
 package mobi.tarantino.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -9,6 +10,11 @@ import java.util.List;
  */
 public class ObjComment extends AbstractModel {
     private List<String> comments = new ArrayList<>();
+
+    public ObjComment(String... s) {
+        super();
+        Collections.addAll(comments, s);
+    }
 
     public ObjComment add(String comment) {
         this.comments.add(comment);

@@ -1,16 +1,21 @@
 package mobi.tarantino.model;
 
+import mobi.tarantino.Config;
+
 import java.math.BigDecimal;
 
 public class BigDecimalPoint extends AbstractModel {
     private BigDecimal x = BigDecimal.ZERO;
     private BigDecimal y = BigDecimal.ZERO;
     private BigDecimal z = BigDecimal.ZERO;
-    private int scale;
+    private Config config;
+
+    public BigDecimalPoint(Config config) {
+        this.config = config;
+    }
 
     public BigDecimalPoint() {
-        //todo добавить конфиг
-        scale = 3;
+        this(Config.getInstance());
     }
 
     public BigDecimalPoint(BigDecimal x, BigDecimal y, BigDecimal z) {
@@ -33,13 +38,13 @@ public class BigDecimalPoint extends AbstractModel {
         return x;
     }
 
-    public BigDecimalPoint setX(float x) {
-        this.x = factory(x);
+    public BigDecimalPoint setX(BigDecimal x) {
+        this.x = x;
         return this;
     }
 
-    public BigDecimalPoint setX(BigDecimal x) {
-        this.x = x;
+    public BigDecimalPoint setX(float x) {
+        this.x = factory(x);
         return this;
     }
 
@@ -47,13 +52,13 @@ public class BigDecimalPoint extends AbstractModel {
         return y;
     }
 
-    public BigDecimalPoint setY(float y) {
-        this.y = factory(y);
+    public BigDecimalPoint setY(BigDecimal y) {
+        this.y = y;
         return this;
     }
 
-    public BigDecimalPoint setY(BigDecimal y) {
-        this.y = y;
+    public BigDecimalPoint setY(float y) {
+        this.y = factory(y);
         return this;
     }
 
@@ -61,18 +66,18 @@ public class BigDecimalPoint extends AbstractModel {
         return z;
     }
 
-    public BigDecimalPoint setZ(float z) {
-        this.z = factory(z);
-        return this;
-    }
-
     public BigDecimalPoint setZ(BigDecimal z) {
         this.z = z;
         return this;
     }
 
+    public BigDecimalPoint setZ(float z) {
+        this.z = factory(z);
+        return this;
+    }
+
     public BigDecimal factory(float value) {
-        return new BigDecimal(value).setScale(scale, BigDecimal.ROUND_DOWN);
+        return new BigDecimal(value).setScale(config.getScale(), BigDecimal.ROUND_DOWN);
     }
 
     @Override

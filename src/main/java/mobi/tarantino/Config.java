@@ -14,7 +14,9 @@ public class Config {
 
     public static final String CONFIG = "/build.properties";
     private static final String DEFAULT_EDGE_COUNT = "4";
+    private static final String DEFAULT_SCALE = "3";
     private static final String DEFAULT_RADIUS = "0.1f";
+    private static final String DEFAULT_PRINT_CONFIG = "false";
     private static final PlateUtils.NODE_TYPE DEFAULT_NODE_TYPE = PlateUtils.NODE_TYPE.NONE;
     private static Config instance;
     Type type;
@@ -58,6 +60,12 @@ public class Config {
         return getInstance(Type.NONE);
     }
 
+    /**
+     * Todo  в будущем придумать, как оно должно быть
+     *
+     * @param type от круда грузить конфиг (файл, анотации. может из консоли диалогом..)
+     * @return инстенс конфига
+     */
     public static Config getInstance(Type type) {
         if (instance == null || instance.type != type) {
             switch (type) {
@@ -88,6 +96,10 @@ public class Config {
         return Integer.parseInt(fieldMap.containsValue(EDGE_COUNT) ? fieldMap.get(EDGE_COUNT) : DEFAULT_EDGE_COUNT);
     }
 
+    public int getScale() {
+        return Integer.parseInt(fieldMap.containsValue(SCALE) ? fieldMap.get(SCALE) : DEFAULT_SCALE);
+    }
+
     public float getRadius() {
         return Float.parseFloat(fieldMap.containsValue(RADIUS) ? fieldMap.get(RADIUS) : DEFAULT_RADIUS);
     }
@@ -104,8 +116,9 @@ public class Config {
         return objComment;
     }
 
-    enum Type {NONE, FILE, CUSTOM}
 
-    enum Field {EDGE_COUNT, RADIUS, NODE_TYPE}
+    public enum Type {NONE, FILE, CUSTOM}
+
+    public enum Field {EDGE_COUNT, SCALE, PRINT_CONFIG, PRINT_EXTRACTS, RADIUS, NODE_TYPE}
 
 }
