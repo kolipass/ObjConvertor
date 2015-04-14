@@ -17,6 +17,7 @@ public class OptimizedObjFigure extends ObjFigure {
         super();
         super.points = parent.points;
         super.faces = parent.faces;
+        super.comments = parent.comments;
     }
 
     public static Set<BigDecimalPoint> makeSet(Iterator<Point> iterator) {
@@ -46,7 +47,12 @@ public class OptimizedObjFigure extends ObjFigure {
         if (points == null || points.size() == 0)
             return "Null";
         else {
-            String result = "";
+            String result = modelsToString(comments);
+
+            if (!result.isEmpty()) {
+                result += "\n\n";
+            }
+
             pointSet = makeSet(points.iterator());
 
             for (Iterator<BigDecimalPoint> iterator = pointSet.iterator(); iterator.hasNext(); ) {

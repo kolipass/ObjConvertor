@@ -1,6 +1,8 @@
 package mobi.tarantino.collection;
 
+import mobi.tarantino.model.AbstractModel;
 import mobi.tarantino.model.Face;
+import mobi.tarantino.model.ObjComment;
 import mobi.tarantino.model.Point;
 
 import java.util.ArrayList;
@@ -11,7 +13,16 @@ import java.util.List;
  * Это коллекция, которая хранит в себе точки и их связи. Умеет печататься в формате OBJ
  */
 public class ObjFigure extends Figure {
+    protected List<ObjComment> comments = new ArrayList<>();
     protected List<Face> faces;
+
+    public void addComment(ObjComment comment) {
+        comments.add(comment);
+    }
+
+    public void addComments(List<ObjComment> comments) {
+        comments.addAll(comments);
+    }
 
     @Override
     public Iterator<Point> iterator() {
@@ -66,11 +77,17 @@ public class ObjFigure extends Figure {
 
     @Override
     public String toString() {
-        if (points == null || points.size() == 0)
+        if (points == null || points.size() == 0 && comments.isEmpty())
             return "Null";
         else {
-            String result = "";
+            String result = modelsToString(comments);
+
+            if (!result.isEmpty()) {
+                result += "\n\n";
+            }
+
             for (Iterator<Point> iterator = points.iterator(); iterator.hasNext(); ) {
+
                 Point point = iterator.next();
                 result += point.toString();
                 if (iterator.hasNext()) result += "\n";
@@ -79,6 +96,19 @@ public class ObjFigure extends Figure {
             result += facesToString(faces);
             return result;
         }
+    }
+
+    protected <N extends AbstractModel> String modelsToString(List<N> faces) {
+        String result = "";
+        if (faces != null && faces.size() > 0) {
+            for (Iterator<N> iterator = faces.iterator(); iterator.hasNext(); ) {
+                result += iterator.next();
+                if (iterator.hasNext()) {
+                    result += "\n";
+                }
+            }
+        }
+        return result;
     }
 
     private String facesToString(List<Face> faces) {

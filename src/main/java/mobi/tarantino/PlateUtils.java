@@ -52,7 +52,7 @@ public abstract class PlateUtils {
     }
 
     public static ObjFigure cylindrate(List<Point> points, Config config) {
-        return cylindrate(points, config.edgeCount, config.radius, config.nodeType);
+        return cylindrate(points, config.getEdgeCount(), config.getRadius(), config.getNodeType());
     }
 
     /**
