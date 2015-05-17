@@ -26,6 +26,10 @@ public class ObjFigure extends Figure {
         this(Config.getInstance());
     }
 
+    public static boolean containsFases(Figure faceFigure) {
+        return faceFigure != null && faceFigure instanceof ObjFigure && ((ObjFigure) faceFigure).faces != null;
+    }
+
     public void addComment(ObjComment comment) {
         comments.add(comment);
     }
@@ -55,7 +59,7 @@ public class ObjFigure extends Figure {
     }
 
     public ObjFigure addFigure(Figure faceFigure) {
-        if (faceFigure != null && faceFigure instanceof ObjFigure) {
+        if (containsFases(faceFigure)) {
             addFigure((ObjFigure) faceFigure);
             return this;
         }
@@ -91,7 +95,7 @@ public class ObjFigure extends Figure {
             return "Null";
         else {
             String result;
-            result = commentsToString();
+            result = getComments();
 
             if (!result.isEmpty()) {
                 result += "\n\n";
@@ -109,7 +113,7 @@ public class ObjFigure extends Figure {
         }
     }
 
-    protected String commentsToString() {
+    public String getComments() {
         String result = modelsToString(comments);
         if ("true".equals(config.get(Config.Field.PRINT_CONFIG))) {
             result += "\n" + new ObjComment(" ***Config*** ") + "\n" + config.toObjComment().toString();

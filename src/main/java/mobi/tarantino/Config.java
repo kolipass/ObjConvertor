@@ -93,19 +93,19 @@ public class Config {
     }
 
     public int getEdgeCount() {
-        return Integer.parseInt(fieldMap.containsValue(EDGE_COUNT) ? fieldMap.get(EDGE_COUNT) : DEFAULT_EDGE_COUNT);
+        return Integer.parseInt(fieldMap.containsKey(EDGE_COUNT) ? fieldMap.get(EDGE_COUNT) : DEFAULT_EDGE_COUNT);
     }
 
     public int getScale() {
-        return Integer.parseInt(fieldMap.containsValue(SCALE) ? fieldMap.get(SCALE) : DEFAULT_SCALE);
+        return Integer.parseInt(fieldMap.containsKey(SCALE) ? fieldMap.get(SCALE) : DEFAULT_SCALE);
     }
 
     public float getRadius() {
-        return Float.parseFloat(fieldMap.containsValue(RADIUS) ? fieldMap.get(RADIUS) : DEFAULT_RADIUS);
+        return Float.parseFloat(fieldMap.containsKey(RADIUS) ? fieldMap.get(RADIUS) : DEFAULT_RADIUS);
     }
 
     public PlateUtils.NODE_TYPE getNodeType() {
-        return fieldMap.containsValue(NODE_TYPE) ? PlateUtils.NODE_TYPE.valueOf(fieldMap.get(NODE_TYPE)) : DEFAULT_NODE_TYPE;
+        return fieldMap.containsKey(NODE_TYPE) ? PlateUtils.NODE_TYPE.valueOf(fieldMap.get(NODE_TYPE)) : DEFAULT_NODE_TYPE;
     }
 
     public ObjComment toObjComment() {

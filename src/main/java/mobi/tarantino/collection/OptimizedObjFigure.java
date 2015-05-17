@@ -51,7 +51,7 @@ public class OptimizedObjFigure extends ObjFigure {
             pointSet = makeSet(points.iterator());
 
 
-            String result = commentsToString();
+            String result = getComments();
 
             if (!result.isEmpty()) {
                 result += "\n\n";

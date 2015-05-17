@@ -241,10 +241,10 @@ public abstract class PlateUtils {
         int n = a.length;
         try {
 
-            for (int i = 0; i < n; i++) {
+            for (BigDecimal[] anA : a) {
                 boolean nonzero = false;
                 for (int j = 0; j < n; j++)
-                    if (a[i][j].compareTo(BigDecimal.ZERO) > 0)
+                    if (anA[j].compareTo(BigDecimal.ZERO) > 0)
                         nonzero = true;
                 if (!nonzero)
                     return BigDecimal.ZERO;
