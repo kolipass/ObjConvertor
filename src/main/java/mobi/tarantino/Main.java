@@ -20,7 +20,7 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        if (args.length != 0) {
+        if (args.length != 1) {
             Config instance = Config.getInstance();
             instance.add(Config.Field.PRINT_CONFIG, "true");
             instance.add(Config.Field.PRINT_EXTRACTS, "true");
@@ -31,24 +31,26 @@ public class Main {
         } else {
             args = new String[]{
 //                    "Lorenc.txt"
-                    "rect.txt", "cube.txt", "cube2.txt", "cube4.txt"
+                    "rect.txt", "cube.txt"
             };
             Config config = Config.getInstance()
                     .add(Config.Field.PRINT_CONFIG, "true")
                     .add(Config.Field.PRINT_EXTRACTS, "true")
                     .add(Config.Field.EDGE_COUNT, "4")
                     .add(Config.Field.RADIUS, "0.1")
-                    .add(Config.Field.OPTIMIZE, String.valueOf(Config.OptimizeType.NONE))
-                    .add(Config.Field.POSTFIX, "_optimized");
+                    .add(Config.Field.OPTIMIZE, String.valueOf(Config.OptimizeType.DEFAULT))
+                    .add(Config.Field.NODE_TYPE, String.valueOf(PlateUtils.NODE_TYPE.NONE))
+                    .add(Config.Field.IS_CLOSING_PLATE, String.valueOf("false"));
 
             try {
                 Config clone4 = config.clone()
                         .add(Config.Field.OPTIMIZE, String.valueOf(Config.OptimizeType.DEFAULT))
-                        .add(Config.Field.SCALE, "4");
-                Config clone3 = clone4.clone().add(Config.Field.SCALE, "2");
-                Config clone2 = clone4.clone().add(Config.Field.SCALE, "1");
+                        .add(Config.Field.SCALE, "4")
+                        .add(Config.Field.POSTFIX, "_optimized");
+//                Config clone3 = clone4.clone().add(Config.Field.SCALE, "2");
+//                Config clone2 = clone4.clone().add(Config.Field.SCALE, "1");
                 new Main(args, new Config[]{config
-                        , clone4, clone3, clone2
+//                        , clone4, clone3, clone2
                 }).calculateAll();
             } catch (CloneNotSupportedException e) {
                 e.printStackTrace();

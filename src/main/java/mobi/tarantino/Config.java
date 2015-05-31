@@ -19,7 +19,8 @@ public class Config implements Cloneable {
     private static final String DEFAULT_PRINT_CONFIG = "false";
     private static final OptimizeType DEFAULT_OPTIMIZE = OptimizeType.DEFAULT;
     private static final PlateUtils.NODE_TYPE DEFAULT_NODE_TYPE = PlateUtils.NODE_TYPE.NONE;
-    private static final String DEFAULT_POSTFIX = null;
+    private static final String DEFAULT_POSTFIX = "";
+    private static final String DEFAULT_IS_CLOSING_PLATE = "false";
     private static Config instance;
     Type type;
     HashMap<Field, String> fieldMap;
@@ -115,6 +116,10 @@ public class Config implements Cloneable {
         return fieldMap.containsKey(OPTIMIZE) ? OptimizeType.valueOf(fieldMap.get(OPTIMIZE)) : DEFAULT_OPTIMIZE;
     }
 
+    public boolean getIsClosingPlate() {
+        return Boolean.parseBoolean(fieldMap.containsKey(IS_CLOSING_PLATE) ? fieldMap.get(IS_CLOSING_PLATE) : DEFAULT_IS_CLOSING_PLATE);
+    }
+
     public PlateUtils.NODE_TYPE getNodeType() {
         return fieldMap.containsKey(NODE_TYPE) ? PlateUtils.NODE_TYPE.valueOf(fieldMap.get(NODE_TYPE)) : DEFAULT_NODE_TYPE;
     }
@@ -138,6 +143,6 @@ public class Config implements Cloneable {
 
     public enum OptimizeType {NONE, DEFAULT}
 
-    public enum Field {EDGE_COUNT, SCALE, PRINT_CONFIG, PRINT_EXTRACTS, RADIUS, NODE_TYPE, OPTIMIZE, POSTFIX}
+    public enum Field {EDGE_COUNT, SCALE, PRINT_CONFIG, PRINT_EXTRACTS, RADIUS, NODE_TYPE, OPTIMIZE, POSTFIX, IS_CLOSING_PLATE}
 
 }

@@ -72,7 +72,7 @@ public abstract class PlateUtils {
         for (Point currentPoint : points) {
             if (lastPoint != null) {
 
-                if (edgeCount >= 3) currentFigure = makePlates(lastPoint, currentPoint, edgeCount, radius);
+                if (edgeCount >= 3) currentFigure = makePlates(config, lastPoint, currentPoint, edgeCount, radius);
                 else currentFigure = shift(Arrays.asList(lastPoint, currentPoint), radius);
 
                 figure.addSpecificFigure(currentFigure, true);
@@ -135,7 +135,7 @@ public abstract class PlateUtils {
         return result;
     }
 
-    public static SpecificFigure makePlates(Point start, Point end, int edgeCount, float radius) {
+    public static SpecificFigure makePlates(Config config, Point start, Point end, int edgeCount, float radius) {
         Point zero = new Point(0, 0, 0);
         Point zero1 = new Point(0, 0, 1);
         Vector zeroUnitVector = new Vector(zero, zero1);
@@ -155,7 +155,8 @@ public abstract class PlateUtils {
         Figure top = Figure.move(defaultPlane, new Vector(zero, end));
 
         SpecificFigure result = new SpecificFigure();
-        result.addSpecificFigure(top, true).addSpecificFigure(bottom, true);
+        boolean closingPlate = config.getIsClosingPlate();
+        result.addSpecificFigure(top, closingPlate).addSpecificFigure(bottom, closingPlate);
         FigureFactory.makeFace(top, bottom).forEach(result::addFigure);
         return result;
     }
