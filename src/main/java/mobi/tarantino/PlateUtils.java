@@ -52,7 +52,7 @@ public abstract class PlateUtils {
     }
 
     public static ObjFigure cylindrate(List<Point> points, Config config) {
-        return cylindrate(points, config.getEdgeCount(), config.getRadius(), config.getNodeType());
+        return cylindrate(points, config, config.getEdgeCount(), config.getRadius(), config.getNodeType());
     }
 
     /**
@@ -63,12 +63,11 @@ public abstract class PlateUtils {
      * @param radius    радиус окружности описанной вокруг фигуры
      * @return м
      */
-    public static ObjFigure cylindrate(List<Point> points, int edgeCount, float radius, NODE_TYPE nodeType) {
-        SpecificFigure figure = new SpecificFigure();
+    public static ObjFigure cylindrate(List<Point> points, Config config, int edgeCount, float radius, NODE_TYPE nodeType) {
+        SpecificFigure figure = new SpecificFigure(config);
 
         Point lastPoint = null;
-        Figure currentFigure = null;
-        Figure lastF = null;
+        Figure currentFigure;
 
         for (Point currentPoint : points) {
             if (lastPoint != null) {
@@ -87,8 +86,6 @@ public abstract class PlateUtils {
     }
 
     private static void makeFollow(float radius, NODE_TYPE nodeType, SpecificFigure figure, Point currentPoint) {
-
-
         switch (nodeType) {
             case ISO_SPHERE:
                 Figure node =
@@ -104,8 +101,6 @@ public abstract class PlateUtils {
                 if (stubCount > 1) {
                     Figure current = ((SpecificFigure) figure.getSpecificFigure(stubCount - 1)).getSpecificFigure(1);
                     Figure last = ((SpecificFigure) figure.getSpecificFigure(stubCount - 2)).getSpecificFigure(0);
-//                    figure.addFigure(current);
-//
 
                     node = makeFollow(current, last);
                     figure.addFigure(node);
@@ -122,11 +117,9 @@ public abstract class PlateUtils {
         int size = lastFigure.points.size();
 
         int lastPointId = size - 1;
-//        int currentPointId = 0;
 
         for (int i = 0; i < size; i++) {
             Figure figure = new Figure();
-//            if (i == 2) {
 
             figure.add(lastFigure.get(lastPointId));
             figure.add(currentFigure.get(lastPointId));
@@ -136,7 +129,6 @@ public abstract class PlateUtils {
             figure.add(lastFigure.get(i));
 
             result.addFigure(figure);
-//            }
             lastPointId = i;
 
         }

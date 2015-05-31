@@ -15,15 +15,15 @@ public class OptimizedObjFigure extends ObjFigure {
     protected Set<BigDecimalPoint> pointSet;
 
     public OptimizedObjFigure(ObjFigure parent) {
-        super();
+        super(parent.config);
         super.points = parent.points;
         super.faces = parent.faces;
         super.comments = parent.comments;
     }
 
-    public static Set<BigDecimalPoint> makeSet(Iterator<Point> iterator) {
+    private Set<BigDecimalPoint> makeSet(Iterator<Point> iterator) {
         Set<BigDecimalPoint> pointSet = new LinkedHashSet<>();
-        while (iterator.hasNext()) pointSet.add(new BigDecimalPoint(iterator.next()));
+        while (iterator.hasNext()) pointSet.add(new BigDecimalPoint(config, iterator.next()));
         return pointSet;
 
     }
@@ -40,7 +40,7 @@ public class OptimizedObjFigure extends ObjFigure {
     }
 
     private Integer getNewPosition(List<BigDecimalPoint> convertedSet, Integer lastIndex) {
-        return convertedSet.indexOf(new BigDecimalPoint(points.get(lastIndex)));
+        return convertedSet.indexOf(new BigDecimalPoint(config, points.get(lastIndex)));
     }
 
     @Override

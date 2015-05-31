@@ -23,8 +23,8 @@ public class BigDecimalPoint extends AbstractModel {
         setPoint(x, y, z);
     }
 
-    public BigDecimalPoint(Point point) {
-        this();
+    public BigDecimalPoint(Config config, Point point) {
+        this(config);
         setPoint(factory(point.x), factory(point.y), factory(point.z));
     }
 
@@ -38,13 +38,13 @@ public class BigDecimalPoint extends AbstractModel {
         return x;
     }
 
-    public BigDecimalPoint setX(BigDecimal x) {
-        this.x = x;
+    public BigDecimalPoint setX(float x) {
+        this.x = factory(x);
         return this;
     }
 
-    public BigDecimalPoint setX(float x) {
-        this.x = factory(x);
+    public BigDecimalPoint setX(BigDecimal x) {
+        this.x = x;
         return this;
     }
 
@@ -52,13 +52,13 @@ public class BigDecimalPoint extends AbstractModel {
         return y;
     }
 
-    public BigDecimalPoint setY(BigDecimal y) {
-        this.y = y;
+    public BigDecimalPoint setY(float y) {
+        this.y = factory(y);
         return this;
     }
 
-    public BigDecimalPoint setY(float y) {
-        this.y = factory(y);
+    public BigDecimalPoint setY(BigDecimal y) {
+        this.y = y;
         return this;
     }
 
@@ -66,13 +66,13 @@ public class BigDecimalPoint extends AbstractModel {
         return z;
     }
 
-    public BigDecimalPoint setZ(BigDecimal z) {
-        this.z = z;
+    public BigDecimalPoint setZ(float z) {
+        this.z = factory(z);
         return this;
     }
 
-    public BigDecimalPoint setZ(float z) {
-        this.z = factory(z);
+    public BigDecimalPoint setZ(BigDecimal z) {
+        this.z = z;
         return this;
     }
 

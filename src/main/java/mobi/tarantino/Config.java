@@ -10,17 +10,19 @@ import java.util.Properties;
 
 import static mobi.tarantino.Config.Field.*;
 
-public class Config {
+public class Config implements Cloneable {
 
     public static final String CONFIG = "/build.properties";
     private static final String DEFAULT_EDGE_COUNT = "4";
     private static final String DEFAULT_SCALE = "3";
     private static final String DEFAULT_RADIUS = "0.1f";
     private static final String DEFAULT_PRINT_CONFIG = "false";
+    private static final OptimizeType DEFAULT_OPTIMIZE = OptimizeType.DEFAULT;
     private static final PlateUtils.NODE_TYPE DEFAULT_NODE_TYPE = PlateUtils.NODE_TYPE.NONE;
+    private static final String DEFAULT_POSTFIX = null;
     private static Config instance;
     Type type;
-    Map<Field, String> fieldMap;
+    HashMap<Field, String> fieldMap;
 
     protected Config() {
         fieldMap = new HashMap<>();
@@ -83,9 +85,10 @@ public class Config {
         return instance;
     }
 
-    public void add(Field field, String value) {
+    public Config add(Field field, String value) {
         if (value != null)
             fieldMap.put(field, value);
+        return this;
     }
 
     public String get(Field field) {
@@ -100,8 +103,16 @@ public class Config {
         return Integer.parseInt(fieldMap.containsKey(SCALE) ? fieldMap.get(SCALE) : DEFAULT_SCALE);
     }
 
+    public String getPostfix() {
+        return fieldMap.containsKey(POSTFIX) ? fieldMap.get(POSTFIX) : DEFAULT_POSTFIX;
+    }
+
     public float getRadius() {
         return Float.parseFloat(fieldMap.containsKey(RADIUS) ? fieldMap.get(RADIUS) : DEFAULT_RADIUS);
+    }
+
+    public OptimizeType getOptimizeType() {
+        return fieldMap.containsKey(OPTIMIZE) ? OptimizeType.valueOf(fieldMap.get(OPTIMIZE)) : DEFAULT_OPTIMIZE;
     }
 
     public PlateUtils.NODE_TYPE getNodeType() {
@@ -116,9 +127,17 @@ public class Config {
         return objComment;
     }
 
+    public Config clone() throws CloneNotSupportedException {
+        Config clone = (Config) super.clone();
+        clone.fieldMap = (HashMap<Field, String>) fieldMap.clone();
+        clone.type = type;
+        return clone;
+    }
 
     public enum Type {NONE, FILE, CUSTOM}
 
-    public enum Field {EDGE_COUNT, SCALE, PRINT_CONFIG, PRINT_EXTRACTS, RADIUS, NODE_TYPE}
+    public enum OptimizeType {NONE, DEFAULT}
+
+    public enum Field {EDGE_COUNT, SCALE, PRINT_CONFIG, PRINT_EXTRACTS, RADIUS, NODE_TYPE, OPTIMIZE, POSTFIX}
 
 }
