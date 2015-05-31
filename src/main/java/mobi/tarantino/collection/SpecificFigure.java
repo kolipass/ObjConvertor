@@ -4,11 +4,21 @@ package mobi.tarantino.collection;
  * Created by kolipass on 22.03.15.
  */
 
+import mobi.tarantino.Config;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class SpecificFigure extends ObjFigure {
     List<Figure> specificFigures = new ArrayList<>();
+
+    public SpecificFigure() {
+        super();
+    }
+
+    public SpecificFigure(Config config) {
+        super(config);
+    }
 
     public SpecificFigure addSpecificFigure(Figure figure, boolean autoAdd) {
         specificFigures.add(figure);

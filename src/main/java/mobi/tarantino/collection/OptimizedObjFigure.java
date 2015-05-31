@@ -80,6 +80,9 @@ public class OptimizedObjFigure extends ObjFigure {
 
     @Override
     protected ObjComment printExtracts() {
+        if (pointSet == null) {
+            pointSet = makeSet(points.iterator());
+        }
         return super.printExtracts().add("pointSet size: " + pointSet.size());
     }
 }
